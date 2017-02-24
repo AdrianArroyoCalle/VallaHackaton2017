@@ -117,7 +117,7 @@ function create(){
     personajes[1].animations.play("quieto");
 
 
-    intro = game.add.text(20,30,"Jugador 1 - Turnos: 0",{
+    intro = game.add.text(20,15,"Jugador 1 - Turnos: 0",{
         font: "20pt Rainmaker",
         fill: "black"
     });
