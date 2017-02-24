@@ -275,11 +275,24 @@ function nextState(){
         }
             break;
         case "PLAY_PLAYER_BOOST": {
-            var objeto = game.add.sprite(550,550,selected.img);
+            var objeto = game.add.sprite(950,550,selected.img);
             game.physics.p2.enable(objeto);
+            objeto.body.clearShapes();
             objeto.body.loadPolygon("fisica",selected.img);
             state = "WAIT_BROKE"; 
             personajes[player - 1].animations.play("izquierda");
+            objeto.scale.setTo(selected.scale[0],selected.scale[1]);
+            //objeto.body.collideWorldBounds = false;
+            //
+            if(objeto.name === "Cohete") {
+                objeto.body.velocity.x = -6000;
+                objeto.body.velocity.y = 100000;
+            } else {
+                objeto.body.velocity.x = -5500;
+                objeto.body.velocity.y = 100000;            
+            }
+            
+            lanzados.push(objeto);
         }break;
         case "WAIT_BROKE":{
             resetSelectedObject();
