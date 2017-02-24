@@ -49,7 +49,10 @@ var frame, alma, cropRect;
 var subiendo = true;
 var lanzados = [];
 var selected;
-var barraCollision;
+var collGroup;
+var pesoBarra = 0;
+var barra;
+var penalizacion;
 
 function preload(){
     game.load.image("cielo","cielo.png");
@@ -77,13 +80,15 @@ function create(){
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.gravity.y = 1000;
 
+    collGroup = game.physics.p2.createCollisionGroup();
+
     var cielo = game.add.sprite(0,0,"cielo");
     nubes[0] = game.add.sprite(30,100,"nube1");
     nubes[0].scale.setTo(0.2,0.2);
     nubes[1] = game.add.sprite(50,120,"nube2");
     nubes[1].scale.setTo(0.2,0.2);
 
-    var barra = game.add.sprite(145,270,"barra");
+    barra = game.add.sprite(145,270,"barra");
     barra.scale.setTo(0.65,0.65);
     barra.animations.add("barra1",[0,1,2,3,4],7,true);
     barra.animations.add("barra2",[5,6,7,8,9],7,true);
@@ -96,6 +101,7 @@ function create(){
     barra.anchor.setTo(0.5,0.5);
     barra.body.x = 400;
     barra.body.y = 290;
+    barra.body.setCollisionGroup(collGroup);
 
 
     var colIzq = game.add.sprite(150,300,"torreIz"); //new Phaser.Rectangle(200,400,50,200);
@@ -185,7 +191,7 @@ function update(){
                 }
             }
         }else if(timeBoost > 0){
-            var penalizacion = 1;
+            penalizacion = 1;
             var change = Math.abs(600 - timeBoost);
             console.log("Change: "+change)
             if (change > 50){
@@ -273,14 +279,15 @@ function nextState(){
         }
             break;
         case "PLAY_PLAYER_BOOST": {
+            var collided = false;
             var objeto = game.add.sprite(950,550,selected.img);
             objeto.scale.setTo(selected.scale[0],selected.scale[1]);
             game.physics.p2.enable(objeto,true);
             objeto.body.clearShapes();
             objeto.body.loadPolygon("fisica",selected.img);
             objeto.body.mass = selected.masa;
-            //objeto.anchor.setTo(0,0);
-            state = "WAIT_BROKE"; 
+            objeto.body.setCollisionGroup(collGroup);
+            //objeto.anchor.setTo(0,0); 
             personajes[player - 1].animations.play("izquierda");
             if(objeto.name === "Cohete") {
                 objeto.body.velocity.x = -6000;
@@ -292,6 +299,26 @@ function nextState(){
             
             lanzados.push(objeto);
 
+            objeto.body.collides(collGroup,function(body1,body2){
+                if(!collided){
+                    console.log("Primera colisión");
+                    collided = true;
+                    pesoBarra += this.objeto.body.mass;
+                    if(pesoBarra > 50){
+                        barra.animations.play("barra2");
+                    }
+                    if(pesoBarra > 100){
+                        barra.animations.play("barra3");
+                    }
+                    if(pesoBarra > 150){
+                        barra.animations.play("barra4");
+                    }
+                    if(pesoBarra > 200){
+                        barra.animations.play("barra5");
+                    }
+                }
+            },this);
+            state = "WAIT_BROKE";
             
         }break;
         case "WAIT_BROKE":{
