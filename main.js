@@ -213,6 +213,7 @@ function update(){
             nextState();
         }
     }
+    var maxPeso = 200;
     if(state == "WAIT_BROKE"){
         var objeto = lanzados[lanzados.length -1];
         if(objeto.x > 147 && objeto.x < 667){
@@ -220,26 +221,55 @@ function update(){
                 if(!collided){
                     collided = true;
                     pesoBarra += objeto.body.mass*penalizacion;
-                    if(pesoBarra > 50){
+                    if(pesoBarra >  maxPeso * 0.2){
                         barra.animations.play("barra2");
                     }
-                    if(pesoBarra > 100){
+                    if(pesoBarra >  maxPeso * 0.4){
                         barra.animations.play("barra3");
                     }
-                    if(pesoBarra > 150){
+                    if(pesoBarra >  maxPeso * 0.6){
                         barra.animations.play("barra4");
                     }
-                    if(pesoBarra > 200){
+                    if(pesoBarra > maxPeso * 0.8){
                         barra.animations.play("barra5");
+                    }
+                    if(pesoBarra > maxPeso) {
+                        game.add.sprite(0,0,"cielo");
+                        var final = game.add.text(300,350,"¡Lo has roto!", {
+                            font: "20pt Rainmaker",
+                            fill: "black"
+                        });
+                        var final = game.add.text(300,450,"Ha ganado el jugador " + ((player == 2) ? 1 : 2), {
+                            font: "20pt Rainmaker",
+                            fill: "black"
+                        });
+                        
+                        var chapuza = "personaje-rojo";
+                        if(player === 2) {
+                            player = 0;
+                            chapuza = "personaje-verde";
+                        }
+                        
+                        personajes[player] = game.add.sprite(500,500,chapuza);
+                        personajes[player].width = 100;
+                        personajes[player].height = 100;
+                        personajes[player].frame = 0;
+                        personajes[player].animations.add("derecha",[24,25,26,27,28,28,29,30,31,32,33,34,35],20,true);
+                        personajes[player].animations.add("izquierda",[36,37,38,39,40,41,42,43,44,45,46,47],20,true);
+                        personajes[player].animations.add("quieto", [48, 49, 50], 4, true); //Diferentes FPs P1 de P2 (razones estéticas)
+                        personajes[player].animations.play("quieto");
+                        
+                        
                     }
                 }
             }
         }
 
-
-        personajes[player - 1].x -= 4;
-        if(personajes[player - 1].x < 50-(60*(player - 1))){
+        if(personajes[player - 1]){
+            personajes[player - 1].x -= 4;
+            if(personajes[player - 1].x < 50-(60*(player - 1)) && pesoBarra < maxPeso){
             nextState();
+            }
         }
     }
 
