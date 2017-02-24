@@ -37,7 +37,7 @@ var objetos = [{
 
 var state = "PLAY_PLAYER_SELECT"; // Otros estados son: PLAY_PLAYER_ANIM, PLAY_PLAYER_BOOST, WAIT_BROKE
 
-var game = new Phaser.Game(800,600,Phaser.AUTO,"",{preload: preload, create: create, update: update});
+var game = new Phaser.Game(1000,600,Phaser.AUTO,"",{preload: preload, create: create, update: update});
 
 var nubes = [];
 var intro, turnos = 0 ;
@@ -49,6 +49,7 @@ var frame, alma, cropRect;
 var subiendo = true;
 var lanzados = [];
 var selected;
+var barraCollision;
 
 function preload(){
     game.load.image("cielo","cielo.png");
@@ -74,7 +75,7 @@ function preload(){
 
 function create(){
     game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.gravity.y = 10;
+    game.physics.p2.gravity.y = 1000;
 
     var cielo = game.add.sprite(0,0,"cielo");
     nubes[0] = game.add.sprite(30,100,"nube1");
@@ -92,6 +93,11 @@ function create(){
     barra.animations.play("barra1");
     game.physics.p2.enable(barra);
     barra.body.static = true;
+    //barra.body.scale.setTo(0.65,0.65);
+    //barra.body.mass = 0;
+    //barra.body.collideWorldBounds = false;
+    barra.body.x = 400;
+    barra.body.y = 290;
 
 
     var colIzq = game.add.sprite(150,300,"torreIz"); //new Phaser.Rectangle(200,400,50,200);
@@ -131,6 +137,8 @@ function create(){
     });
 
     mostrarLineaRandom();
+
+    console.log(barra.body);
 }
 
 function update(){
@@ -139,9 +147,9 @@ function update(){
     nubes[0].x += 0.5;
     nubes[1].x += 1;
 
-    if(nubes[0].x > 800)
+    if(nubes[0].x > 1000)
         nubes[0].x = -100;
-    if(nubes[1].x > 800)
+    if(nubes[1].x > 1000)
         nubes[1].x = -100;
 
     // INPUT
@@ -157,8 +165,8 @@ function update(){
         }
     }
     if(state == "PLAY_PLAYER_ANIM"){
-        personajes[player -1 ].x += 3;
-        if(personajes[player -1].x > 700){
+        personajes[player -1 ].x += 4;
+        if(personajes[player -1].x > 900){
             nextState();
         }
     }
@@ -224,7 +232,7 @@ function update(){
         // COMPROBAR PESO Y CAMBIAR FRAME
 
 
-        personajes[player - 1].x -= 3;
+        personajes[player - 1].x -= 4;
         if(personajes[player - 1].x < 50-(60*(player - 1))){
             nextState();
         }
