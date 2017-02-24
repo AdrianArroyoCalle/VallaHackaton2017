@@ -47,6 +47,8 @@ var startTime = 0, topTime = 0;
 var personajes = [];
 var frame, alma, cropRect;
 var subiendo = true;
+var lanzados = [];
+var selected;
 
 function preload(){
     game.load.image("cielo","cielo.png");
@@ -71,6 +73,9 @@ function preload(){
 }
 
 function create(){
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.gravity.y = 10;
+
     var cielo = game.add.sprite(0,0,"cielo");
     nubes[0] = game.add.sprite(30,100,"nube1");
     nubes[0].scale.setTo(0.2,0.2);
@@ -85,6 +90,9 @@ function create(){
     barra.animations.add("barra4",[15,16,17,18,19],7,true);
     barra.animations.add("barra5",[20,21,22,23,24],7,true);
     barra.animations.play("barra1");
+    game.physics.p2.enable(barra);
+    barra.body.static = true;
+
 
     var colIzq = game.add.sprite(150,300,"torreIz"); //new Phaser.Rectangle(200,400,50,200);
     colIzq.width = 100;
@@ -141,10 +149,10 @@ function update(){
         if(objetos.filter(function(obj){
             return obj.sprite.selected;
         }).length > 0){
-            var selected = objetos.filter(function(obj){
+            selected = objetos.filter(function(obj){
                 return obj.sprite.selected;
             })[0];
-            alert("SE HA SELECCIONADO "+selected.name);
+            //alert("SE HA SELECCIONADO "+selected.name);
             nextState();
         }
     }
@@ -211,6 +219,11 @@ function update(){
         }*/
     }
     if(state == "WAIT_BROKE"){
+        // AÑADIR OBJETO y LANZARLO
+        
+        // COMPROBAR PESO Y CAMBIAR FRAME
+
+
         personajes[player - 1].x -= 3;
         if(personajes[player - 1].x < 50-(60*(player - 1))){
             nextState();
@@ -254,6 +267,9 @@ function nextState(){
         }
             break;
         case "PLAY_PLAYER_BOOST": {
+            var objeto = game.add.sprite(550,550,selected.img);
+            game.physics.p2.enable(objeto);
+            objeto.body.loadPolygon("fisica",selected.img);
             state = "WAIT_BROKE"; 
             personajes[player - 1].animations.play("izquierda");
         }break;
