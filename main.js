@@ -12,27 +12,27 @@ var objetos = [{
     name: "Frigorífico",
     masa: 50,
     img: "frigo",
-    scale: [0.4,0.4]
+    scale: [1,1]
 },{
     name: "Carrito",
     masa: 25,
     img: "carrito",
-    scale: [0.5,0.5]
+    scale: [1,1]
 },{
     name: "Televisión",
     masa: 15,
     img: "tele",
-    scale: [0.5,0.5]
+    scale: [1,1]
 },{
     name: "Cohete",
     masa: 87,
     img: "cohete",
-    scale: [0.5,0.5]
+    scale: [1,1]
 },{
     name: "Tonel",
     masa: 14,
     img: "tonel",
-    scale: [0.4,0.4]
+    scale: [1,1]
 }]; // AÑADIR MÁS
 
 var state = "PLAY_PLAYER_SELECT"; // Otros estados son: PLAY_PLAYER_ANIM, PLAY_PLAYER_BOOST, WAIT_BROKE
@@ -91,11 +91,9 @@ function create(){
     barra.animations.add("barra4",[15,16,17,18,19],7,true);
     barra.animations.add("barra5",[20,21,22,23,24],7,true);
     barra.animations.play("barra1");
-    game.physics.p2.enable(barra);
+    game.physics.p2.enable(barra,true);
     barra.body.static = true;
-    //barra.body.scale.setTo(0.65,0.65);
-    //barra.body.mass = 0;
-    //barra.body.collideWorldBounds = false;
+    barra.anchor.setTo(0.5,0.5);
     barra.body.x = 400;
     barra.body.y = 290;
 
@@ -138,7 +136,7 @@ function create(){
 
     mostrarLineaRandom();
 
-    console.log(barra.body);
+    game.physics.p2.setImpactEvents(true);
 }
 
 function update(){
@@ -276,14 +274,14 @@ function nextState(){
             break;
         case "PLAY_PLAYER_BOOST": {
             var objeto = game.add.sprite(950,550,selected.img);
-            game.physics.p2.enable(objeto);
+            objeto.scale.setTo(selected.scale[0],selected.scale[1]);
+            game.physics.p2.enable(objeto,true);
             objeto.body.clearShapes();
             objeto.body.loadPolygon("fisica",selected.img);
+            objeto.body.mass = selected.masa;
+            //objeto.anchor.setTo(0,0);
             state = "WAIT_BROKE"; 
             personajes[player - 1].animations.play("izquierda");
-            objeto.scale.setTo(selected.scale[0],selected.scale[1]);
-            //objeto.body.collideWorldBounds = false;
-            //
             if(objeto.name === "Cohete") {
                 objeto.body.velocity.x = -6000;
                 objeto.body.velocity.y = 100000;
@@ -293,6 +291,8 @@ function nextState(){
             }
             
             lanzados.push(objeto);
+
+            
         }break;
         case "WAIT_BROKE":{
             resetSelectedObject();
