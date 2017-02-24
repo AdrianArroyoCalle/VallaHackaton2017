@@ -53,6 +53,7 @@ var collGroup;
 var pesoBarra = 0;
 var barra;
 var penalizacion;
+var collided = false;
 
 function preload(){
     game.load.image("cielo","cielo.png");
@@ -101,7 +102,7 @@ function create(){
     barra.anchor.setTo(0.5,0.5);
     barra.body.x = 400;
     barra.body.y = 290;
-    barra.body.setCollisionGroup(collGroup);
+    //barra.body.setCollisionGroup(collGroup);
 
 
     var colIzq = game.add.sprite(150,300,"torreIz"); //new Phaser.Rectangle(200,400,50,200);
@@ -142,7 +143,7 @@ function create(){
 
     mostrarLineaRandom();
 
-    game.physics.p2.setImpactEvents(true);
+    //game.physics.p2.setImpactEvents(true);
 }
 
 function update(){
@@ -211,29 +212,29 @@ function update(){
             frame.destroy();
             nextState();
         }
-
-        /*var now = Date.now();
-        cropRect.height = (alma.height*1500)/(now - timeBoost+1);
-        console.log(now - timeBoost);
-        console.log(cropRect);
-        alma.updateCrop();
-        if( (timeBoost == 0 || (now - timeBoost) > 1500 ) && game.input.keyboard.isDown(Phaser.KeyCode.SPACEBAR)){
-            timeBoost = now;
-        }else if(timeBoost > 0){
-            var boost = now - timeBoost;
-            var change = Math.abs(boost - 666) // 666ms es el tiempo perfecto (poner un tiempo especifico a cada objeto?)
-            var penalizacion = 0;
-            if(change > 200){
-                penalizacion = (change / 100)^2;
-            }
-            timeBoost = 0;
-            nextState();
-        }*/
     }
     if(state == "WAIT_BROKE"){
-        // AÑADIR OBJETO y LANZARLO
-        
-        // COMPROBAR PESO Y CAMBIAR FRAME
+        var objeto = lanzados[lanzados.length -1];
+        if(objeto.x > 147 && objeto.x < 667){
+            if(objeto.y > 200){
+                if(!collided){
+                    collided = true;
+                    pesoBarra += objeto.body.mass*penalizacion;
+                    if(pesoBarra > 50){
+                        barra.animations.play("barra2");
+                    }
+                    if(pesoBarra > 100){
+                        barra.animations.play("barra3");
+                    }
+                    if(pesoBarra > 150){
+                        barra.animations.play("barra4");
+                    }
+                    if(pesoBarra > 200){
+                        barra.animations.play("barra5");
+                    }
+                }
+            }
+        }
 
 
         personajes[player - 1].x -= 4;
@@ -279,7 +280,6 @@ function nextState(){
         }
             break;
         case "PLAY_PLAYER_BOOST": {
-            var collided = false;
             var objeto = game.add.sprite(899,499,selected.img);
             objeto.scale.setTo(selected.scale[0],selected.scale[1]);
             game.physics.p2.enable(objeto,true);
@@ -308,29 +308,11 @@ function nextState(){
             
             lanzados.push(objeto);
 
-            /*objeto.body.collides(collGroup,function(body1,body2){
-                if(!collided){
-                    console.log("Primera colisión");
-                    collided = true;
-                    pesoBarra += this.objeto.body.mass*penalizacion;
-                    if(pesoBarra > 50){
-                        barra.animations.play("barra2");
-                    }
-                    if(pesoBarra > 100){
-                        barra.animations.play("barra3");
-                    }
-                    if(pesoBarra > 150){
-                        barra.animations.play("barra4");
-                    }
-                    if(pesoBarra > 200){
-                        barra.animations.play("barra5");
-                    }
-                }
-            },this);*/
             state = "WAIT_BROKE";
             
         }break;
         case "WAIT_BROKE":{
+            collided = false;
             resetSelectedObject();
             personajes[player - 1].animations.play("quieto");
             personajes[player - 1].frame = 0;
