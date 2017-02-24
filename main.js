@@ -234,31 +234,33 @@ function update(){
                         barra.animations.play("barra5");
                     }
                     if(pesoBarra > maxPeso) {
-                        game.add.sprite(0,0,"cielo");
-                        var final = game.add.text(300,350,"¡Lo has roto!", {
-                            font: "20pt Rainmaker",
-                            fill: "black"
-                        });
-                        var final = game.add.text(300,450,"Ha ganado el jugador " + ((player == 2) ? 1 : 2), {
-                            font: "20pt Rainmaker",
-                            fill: "black"
-                        });
-                        
-                        var chapuza = "personaje-rojo";
-                        if(player === 2) {
-                            player = 0;
-                            chapuza = "personaje-verde";
-                        }
-                        
-                        personajes[player] = game.add.sprite(500,500,chapuza);
-                        personajes[player].width = 100;
-                        personajes[player].height = 100;
-                        personajes[player].frame = 0;
-                        personajes[player].animations.add("derecha",[24,25,26,27,28,28,29,30,31,32,33,34,35],20,true);
-                        personajes[player].animations.add("izquierda",[36,37,38,39,40,41,42,43,44,45,46,47],20,true);
-                        personajes[player].animations.add("quieto", [48, 49, 50], 4, true); //Diferentes FPs P1 de P2 (razones estéticas)
-                        personajes[player].animations.play("quieto");
-                        
+                        barra.destroy();
+                        setTimeout(function(){
+                            game.add.sprite(0,0,"cielo");
+                            var final = game.add.text(300,350,"¡Lo has roto!", {
+                                font: "20pt Rainmaker",
+                                fill: "black"
+                            });
+                            var final = game.add.text(300,450,"Ha ganado el jugador " + ((player == 2) ? 1 : 2), {
+                                font: "20pt Rainmaker",
+                                fill: "black"
+                            });
+                            
+                            var chapuza = "personaje-rojo";
+                            if(player === 2) {
+                                player = 0;
+                                chapuza = "personaje-verde";
+                            }
+                            
+                            personajes[player] = game.add.sprite(500,500,chapuza);
+                            personajes[player].width = 100;
+                            personajes[player].height = 100;
+                            personajes[player].frame = 0;
+                            personajes[player].animations.add("derecha",[24,25,26,27,28,28,29,30,31,32,33,34,35],20,true);
+                            personajes[player].animations.add("izquierda",[36,37,38,39,40,41,42,43,44,45,46,47],20,true);
+                            personajes[player].animations.add("quieto", [48, 49, 50], 4, true); //Diferentes FPs P1 de P2 (razones estéticas)
+                            personajes[player].animations.play("quieto");
+                        },500);                        
                         
                     }
                 }
