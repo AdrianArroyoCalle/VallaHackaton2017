@@ -97,7 +97,7 @@ function create(){
     barra.animations.add("barra4",[15,16,17,18,19],7,true);
     barra.animations.add("barra5",[20,21,22,23,24],7,true);
     barra.animations.play("barra1");
-    game.physics.p2.enable(barra,true);
+    game.physics.p2.enable(barra,false);
     barra.body.static = true;
     barra.anchor.setTo(0.5,0.5);
     barra.body.x = 400;
@@ -243,6 +243,14 @@ function update(){
         }
     }
 
+    lanzados.forEach(function(obj){
+        if(obj){
+            if(obj.x < 100 && obj.y > 400){
+                obj.destroy();
+            }
+        }
+    });
+
 
     // PHYSICS
 
@@ -282,7 +290,7 @@ function nextState(){
         case "PLAY_PLAYER_BOOST": {
             var objeto = game.add.sprite(899,499,selected.img);
             objeto.scale.setTo(selected.scale[0],selected.scale[1]);
-            game.physics.p2.enable(objeto,true);
+            game.physics.p2.enable(objeto,false);
             objeto.body.clearShapes();
             objeto.body.loadPolygon("fisica",selected.img);
             objeto.body.mass = selected.masa;
