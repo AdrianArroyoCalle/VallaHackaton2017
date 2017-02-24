@@ -280,30 +280,39 @@ function nextState(){
             break;
         case "PLAY_PLAYER_BOOST": {
             var collided = false;
-            var objeto = game.add.sprite(950,550,selected.img);
+            var objeto = game.add.sprite(899,499,selected.img);
             objeto.scale.setTo(selected.scale[0],selected.scale[1]);
             game.physics.p2.enable(objeto,true);
             objeto.body.clearShapes();
             objeto.body.loadPolygon("fisica",selected.img);
             objeto.body.mass = selected.masa;
-            objeto.body.setCollisionGroup(collGroup);
+            //objeto.body.setCollisionGroup(collGroup);
             //objeto.anchor.setTo(0,0); 
             personajes[player - 1].animations.play("izquierda");
-            if(objeto.name === "Cohete") {
-                objeto.body.velocity.x = -6000;
-                objeto.body.velocity.y = 100000;
-            } else {
-                objeto.body.velocity.x = -5500;
-                objeto.body.velocity.y = 100000;            
+            switch(selected.img) {
+                case "tele":
+                    objeto.body.velocity.x = -400;
+                    objeto.body.velocity.y = 10000;
+                    break;
+                case "tonel":
+                    objeto.body.velocity.x = -500;
+                    objeto.body.velocity.y = 10000;
+                    break;
+                case "cohete":
+                    objeto.body.velocity.x = -300;
+                    objeto.body.velocity.y = 10000;
+                default:
+                    objeto.body.velocity.x = -600;
+                    objeto.body.velocity.y = 10000;
             }
             
             lanzados.push(objeto);
 
-            objeto.body.collides(collGroup,function(body1,body2){
+            /*objeto.body.collides(collGroup,function(body1,body2){
                 if(!collided){
                     console.log("Primera colisión");
                     collided = true;
-                    pesoBarra += this.objeto.body.mass;
+                    pesoBarra += this.objeto.body.mass*penalizacion;
                     if(pesoBarra > 50){
                         barra.animations.play("barra2");
                     }
@@ -317,7 +326,7 @@ function nextState(){
                         barra.animations.play("barra5");
                     }
                 }
-            },this);
+            },this);*/
             state = "WAIT_BROKE";
             
         }break;
